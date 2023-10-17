@@ -1,56 +1,60 @@
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
-  let bassColor = map(bass, 10, 90, 0, 255);
-  let glowIntensity = map(drum, 20, 80, 3, 8);  // Increase glow intensity with bass
+  // 计算背景颜色的渐变
+  let bassMapped = map(bass, 0, 100, 0.5, 2); // 假设bass的范围是0到100
+  let startColor = color(32, 2, 87);  // 深蓝色
+  let endColor = color(154, 65, 191);  // 紫色
+
+  background(5, 1, 36);
   
-  background(bassColor, 0, 0);
-  
-  textFont('Helvetica');
-  rectMode(CENTER);
-  textSize(24);
-  
-  let bar_spacing = height / 20;
-  let bar_height = width / 12;
-  let bar_pos_x = width / 2;
-  
-  // vocal bar is red
-  fill(200, 0, 0);
-  rect(bar_pos_x, height / 2 + 1 * bar_spacing, 4 * vocal, bar_height, 10, 10, 10, 10);
-  fill(0);
-  text("vocals", bar_pos_x, height / 2 + 1 * bar_spacing + 8);
-  
-  // drum bar is green
-  fill(0, 200, 0);
-  rect(bar_pos_x, height / 2 + 2 * bar_spacing, 4 * drum, bar_height, 10, 10, 10, 10);
-  fill(0);
-  text("drums", bar_pos_x, height / 2 + 2 * bar_spacing + 8);
-  
-  // bass bar is blue
-  fill(50, 50, 240);
-  rect(bar_pos_x, height / 2 + 3 * bar_spacing, 4 * bass, bar_height, 10, 10, 10, 10);
-  fill(0);
-  text("bass", bar_pos_x, height / 2 + 3 * bar_spacing + 8);
-  
-  // other bar is white
-  fill(200, 200, 200);
-  rect(bar_pos_x, height / 2 + 4 * bar_spacing, 4 * other, bar_height, 10, 10, 10, 10);
-  fill(0);
-  text("other", bar_pos_x, height / 2 + 4 * bar_spacing + 8);
-  
-  // Draw the glowing text
-  textAlign(CENTER);
-  textSize(vocal * 1.3);
-  let glowColors = [color(255, 0, 0, 50), color(255, 165, 0, 50), color(255, 255, 0, 50)];
-  
-  for (let i = glowIntensity; i > 0; i--) {
-    for (let glowc of glowColors) {
-      fill(glowc);
-      text(words, width / 2 + i, height / 3 + i);
-      text(words, width / 2 - i, height / 3 - i);
-      text(words, width / 2 + i, height / 3 - i);
-      text(words, width / 2 - i, height / 3 + i);
-    }
+  // 创建背景渐变
+  noStroke();
+  for (let i = 0; i <= 1; i += 0.007) {
+    let inter = lerpColor(startColor, endColor, i * bassMapped);
+    fill(inter);
+    rect(0, i * height, width, height * 0.006);
   }
   
-  fill(255, 255, 0);  // Main text color
+  textFont('Helvetica');
+  rectMode(CORNER);
+  textSize(24);
+  
+  // 计算矩形的参数
+  let rectCount = 8; // 矩形的数量
+  let rectSpacing = width / (rectCount + 1); // 计算矩形之间的间距
+  let bar_width = 80;  // 矩形的宽度
+  let bar_pos_y = 400;  // 矩形的垂直位置
+  
+  // 定义矩形的高度，分别对应不同参数
+  let rectHeights = [4 * bass,4 * bass, 4 * drum,4 * drum,  4 * other,4 * other,4 * vocal,4 * vocal];
+  let rectStrokeWeights = [bass / 10,bass / 10,drum / 10, drum / 10,other/ 10, other / 10,vocal / 10,vocal/10 ];
+  
+  // 创建四个矩形，分别对应不同参数
+  for (let i = 0; i < rectCount; i++) {
+    let x = (i + 1) * rectSpacing - bar_width / 2; // 计算矩形的水平位置，居中
+    let rectHeight = rectHeights[i]; // 获取矩形的高度
+    let rectStrokeWeight = rectStrokeWeights[i]; // 获取矩形的strokeWeight
+    
+    push();
+    noFill();  
+    strokeWeight(rectStrokeWeight);
+    stroke(78, 230, 220); // 保持颜色不变
+    rect(x, bar_pos_y, bar_width, rectHeight);
+    pop();
+  }
+  
+  // 绘制发光的文本
+  let glowIntensity = map(drum, 20, 80, 3, 8); // 基于 drum 值计算发光强度
+  textAlign(CENTER);
+  textSize(vocal * 1.3);
+  
+  for (let i = glowIntensity; i > 0; i--) {
+    fill(255, 165, 0, 50);
+    text(words, width / 2 + i, height / 3 + i);
+    text(words, width / 2 - i, height / 3 - i);
+    text(words, width / 2 + i, height / 3 - i);
+    text(words, width / 2 - i, height / 3 + i);
+  }
+  
+  fill(255, 255, 0);  // 主要文本颜色
   text(words, width / 2, height / 3);
 }
