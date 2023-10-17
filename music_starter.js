@@ -1,8 +1,8 @@
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // 计算背景颜色的渐变
   let bassMapped = map(bass, 0, 100, 0.5, 2); // 假设bass的范围是0到100
-  let startColor = color(32, 2, 87);  // 深蓝色
-  let endColor = color(154, 65, 191);  // 紫色
+  let startColor = color(43, 4, 113);  // 深蓝色
+  let endColor = color(158, 45, 205);  // 紫色
 
   background(5, 1, 36);
   
@@ -31,7 +31,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // 创建四个矩形，分别对应不同参数
   for (let i = 0; i < rectCount; i++) {
     let x = (i + 1) * rectSpacing - bar_width / 2; // 计算矩形的水平位置，居中
-    let rectHeight = rectHeights[i]+random(0,100); // 获取矩形的高度
+    let rectHeight = rectHeights[i] + random(0, 100); // 获取矩形的高度
     let rectStrokeWeight = rectStrokeWeights[i]; // 获取矩形的strokeWeight
     
     push();
@@ -57,4 +57,24 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   
   fill(255, 255, 0);  // 主要文本颜色
   text(words, width / 2, height / 3);
+
+  // 绘制太阳
+  let sunDiameter = 100;
+  let targetSunDiameter = map(bass, 0, 100, 5000, 6000); // 根据 bass 值计算太阳目标直径
+  let sunColor = color(255, 100, 255); // 紫色
+  let smoothingFactor = 0.05; // 控制平滑度的因子
+  sunDiameter = lerp(sunDiameter, targetSunDiameter, smoothingFactor);
+
+  fill(sunColor);
+  noStroke();
+  ellipse(width / 2, height / 3, sunDiameter, sunDiameter);
+  
+  // 绘制太阳的光晕
+  for (let i = 1.5; i <= 3.0; i += 0.2) {
+    let sunHaloDiameter = sunDiameter * i; // 光晕直径比太阳稍大
+    let sunHaloOpacity = map(bass, 0, 100, 0, 20); // 光晕的透明度随着bass的增大而减小
+    fill(sunColor.levels[0], sunColor.levels[1], sunColor.levels[2], sunHaloOpacity);
+    noStroke();
+    ellipse(width / 2, height / 3, sunHaloDiameter, sunHaloDiameter);
+  }
 }
