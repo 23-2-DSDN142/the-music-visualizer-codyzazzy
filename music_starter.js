@@ -31,7 +31,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // 创建四个矩形，分别对应不同参数
   for (let i = 0; i < rectCount; i++) {
     let x = (i + 1) * rectSpacing - bar_width / 2; // 计算矩形的水平位置，居中
-    let rectHeight = rectHeights[i]; // 获取矩形的高度
+    let rectHeight = rectHeights[i]+random(0,100); // 获取矩形的高度
     let rectStrokeWeight = rectStrokeWeights[i]; // 获取矩形的strokeWeight
     
     push();
