@@ -6,6 +6,8 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   let tension = 1;
   let suntension = 1;
   let textoffset = -140;
+  let lastTime = 0;
+  let yPositions = [];
 
   if (song.currentTime() > 17 && song.currentTime() < 19.75) {
     tension = 1;
@@ -41,7 +43,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   }
   
   // 绘制太阳
-  let sunDiameter = 100;
+  let sunDiameter = 200;
   let targetSunDiameter = map(bass, 0, 100, 5000 * tension, 6000 * tension); // 根据 bass 值计算太阳目标直径
   let sunColor = color(255, 100, 255); // 紫色
   let smoothingFactor = 0.05; // 控制平滑度的因子
@@ -52,14 +54,17 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   ellipse(width / 2, height / 3, sunDiameter, sunDiameter);
   
   // 绘制太阳的光晕
-  for (let i = 1.5; i <= 3.0; i += 0.2 / suntension) {
+  for (let i = 1.2; i <= 2.5; i += 0.2 / suntension) {
     let sunHaloDiameter = sunDiameter * i; // 光晕直径比太阳稍大
-    let sunHaloOpacity = map(bass, 0, 100, 0, 30); // 光晕的透明度随着bass的增大而减小
+    let sunHaloOpacity = map(bass, 50, 100, 5, 20); // 光晕的透明度随着bass的增大而减小
     fill(sunColor.levels[0], sunColor.levels[1], sunColor.levels[2], sunHaloOpacity);
     noStroke();
     ellipse(width / 2, height / 3, sunHaloDiameter, sunHaloDiameter);
   }
 
+
+
+  
   textFont('Helvetica');
   textSize(24);
   
@@ -105,13 +110,19 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   fill(255, 255, 0);  // 主要文本颜色
   text(words, width / 2, bar_pos_y+textoffset);
   
-  //ground
-  push();
   noStroke();
-  fill(27 , 10 , 71);
-  rect(0, 500, 1200, 600);
-  pop();
+  let startColor2 = color(27, 10, 71);  // 你可以按需调整这些颜色
+  let endColor2 = color(255, 105, 180);  // 你可以按需调整这些颜色
+  
+  for (let i = 500/height; i <= 1100/height; i += 0.05 / other) {  // 起始和结束位置调整为500和1100（绘制高度600）
+    push();
+    let inter = lerpColor(startColor2, endColor2, i * bassMapped);
+    fill(inter);
+    rect(0, i * height, 1200, height * 0.03 / other);  // 宽度调整为1200
+    pop();
+  }
 
+  
   push();
   stroke(173, 216, 230);
   strokeWeight(2);
@@ -125,4 +136,22 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   line(0, 790, 1200, 790);
   line(0, 900, 1200, 900);
   pop();
+
+
+
+
+  // 绘制光晕效果
+  for (let i = 0; i <= 10; i++) {  // 从0到10，绘制11条线
+    let alpha = map(i, 0, 10, 0, 255);  // 根据 i 值映射透明度从0到255
+    let offsetY = map(i, 0, 10, 0, 10);  // 根据 i 值映射y轴偏移从0到10
+    stroke(173, 216, 230, 255 - alpha);  // 设置线条颜色和透明度
+    strokeWeight(0.01*bass);  // 设置线条宽度
+    line(0, 500 + offsetY, width, 500 + offsetY);  // 在y=500+offsetY处绘制线条
+    line(0, 500 - offsetY, width, 500 - offsetY);  // 在y=500-offsetY处绘制线条
+  }
+
+  // 在y=500处绘制主要的地平线
+  stroke(173, 216, 230);  // 设置线条颜色为浅蓝色
+  strokeWeight(2);  // 设置线条宽度
+  line(0, 500, width, 500);  // 在y=500处绘制线条
 }
