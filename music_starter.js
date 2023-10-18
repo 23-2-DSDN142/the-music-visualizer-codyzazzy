@@ -6,8 +6,10 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   let tension = 1;
   let suntension = 1;
   let textoffset = -140;
-  let lastTime = 0;
-  let yPositions = [];
+  let sunColor = color(255, 100, 255); // 紫色
+  let sunColorreflection = color(255, 100, 255); // 紫色
+  let sunDiameter = 200;
+  let smoothingFactor = 0.05; // 控制平滑度的因子
 
   if (song.currentTime() > 17 && song.currentTime() < 19.75) {
     tension = 1;
@@ -43,12 +45,9 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   }
   
   // 绘制太阳
-  let sunDiameter = 200;
+  
   let targetSunDiameter = map(bass, 0, 100, 5000 * tension, 6000 * tension); // 根据 bass 值计算太阳目标直径
-  let sunColor = color(255, 100, 255); // 紫色
-  let smoothingFactor = 0.05; // 控制平滑度的因子
   sunDiameter = lerp(sunDiameter, targetSunDiameter, smoothingFactor);
-
   fill(sunColor);
   noStroke();
   ellipse(width / 2, height / 3, sunDiameter, sunDiameter);
@@ -62,6 +61,11 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     ellipse(width / 2, height / 3, sunHaloDiameter, sunHaloDiameter);
   }
 
+  // 绘制太阳的倒影
+  let reflectionY = height - (height / 3);  // 计算倒影太阳的y坐标
+  fill(sunColor);
+  noStroke();
+  ellipse(width / 2, reflectionY, sunDiameter*0.95, sunDiameter*0.95);
 
 
   
