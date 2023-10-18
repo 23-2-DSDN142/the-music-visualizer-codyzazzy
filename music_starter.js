@@ -104,16 +104,33 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   textAlign(CENTER);
   textSize(vocal * 1.3);
   
+  // 先绘制倒影
+  push(); // 保存当前的设置
+  fill(255, 255, 255, 100);  // 设置倒影的颜色和透明度
+  scale(1, -1);  // 垂直翻转坐标系以绘制倒影
+  text(words, width / 2, - (bar_pos_y + 50 + vocal * 1.3));  // 这里 y 坐标是负的
+  pop();  // 恢复之前保存的设置
+  
+  // 绘制发光的文本
+  let i=glowIntensity = map(drum, 20, 80, 3, 8); // 基于 drum 值计算发光强度
+  textAlign(CENTER);
+  textSize(vocal * 1.3);
+
+  // 先绘制倒影
+  fill(255, 255, 255, 70);  // 设置倒影的颜色和透明度
+  text(words, width / 20, textoffset);  // 倒影位置在y=500的地平线以下
+  
+  // 绘制主要的、发光的文本
   for (let i = glowIntensity; i > 0; i--) {
     fill(255, 165, 0, 50);
-    text(words, width / 2 + i, bar_pos_y + i+textoffset);
-    text(words, width / 2 - i, bar_pos_y - i+textoffset);
-    text(words, width / 2 + i, bar_pos_y - i+textoffset);
-    text(words, width / 2 - i, bar_pos_y + i+textoffset);
+    text(words, width / 2 + i, bar_pos_y + i + textoffset);
+    text(words, width / 2 - i, bar_pos_y - i + textoffset);
+    text(words, width / 2 + i, bar_pos_y - i + textoffset);
+    text(words, width / 2 - i, bar_pos_y + i + textoffset);
   }
   
   fill(255, 255, 0);  // 主要文本颜色
-  text(words, width / 2, bar_pos_y+textoffset);
+  text(words, width / 2, bar_pos_y + textoffset);
   
   noStroke();
   let startColor2 = color(27, 10, 71);  // 你可以按需调整这些颜色
