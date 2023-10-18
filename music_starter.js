@@ -10,6 +10,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   let sunColorreflection = color(255, 100, 255); // 紫色
   let sunDiameter = 200;
   let smoothingFactor = 0.05; // 控制平滑度的因子
+  let rectWidths = [40, 60, 50, 80, 45, 70, 30, 55, 60, 65, 70];
 
   if (song.currentTime() > 17 && song.currentTime() < 19.75) {
     tension = 1;
@@ -86,15 +87,15 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   // 创建四个矩形，分别对应不同参数
   for (let i = 0; i < rectCount; i++) {
     push();
-    let x = (i + 1) * rectSpacing - bar_width / 2; // 计算矩形的水平位置，居中
-    let rectHeight = rectHeights[i]; // 获取矩形的高度
-    let rectStrokeWeight = rectStrokeWeights[i]; // 获取矩形的strokeWeight
-    pop();
-    push();
+    let rectWidth = rectWidths[i];  // 获取矩形的宽度
+    let x = (i + 1) * rectSpacing - rectWidth / 2;  // 计算矩形的水平位置，居中
+    let rectHeight = rectHeights[i];  // 获取矩形的高度
+    let rectStrokeWeight = rectStrokeWeights[i];  // 获取矩形的strokeWeight
+  
     noFill();  
     strokeWeight(rectStrokeWeight);
     stroke(78, 230, 220); // 保持颜色不变
-    rect(x, bar_pos_y - rectHeight / 2, bar_width, rectHeight); // 修改矩形的垂直位置
+    rect(x, bar_pos_y - rectHeight / 2, rectWidth, rectHeight); // 使用新的矩形宽度
     pop();
   }
 
@@ -129,7 +130,7 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   
   push();
   stroke(173, 216, 230);
-  strokeWeight(2);
+  strokeWeight(2*drum/50);
   line(0, 500, 1200, 500);
   line(0, 510, 1200, 510);
   line(0, 530, 1200, 530);
@@ -140,8 +141,6 @@ let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8,
   line(0, 790, 1200, 790);
   line(0, 900, 1200, 900);
   pop();
-
-
 
 
   // 绘制光晕效果
