@@ -1,26 +1,29 @@
+let load = true;
+let car;
+
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
-  // 计算背景颜色的渐变
-  let bassMapped = map(bass, 0, 100, 0.5, 2); // 假设bass的范围是0到100
-  let startColor = color(43, 4, 113);  // 深蓝色
-  let endColor = color(158, 45, 205);  // 紫色
+  // Calculate background color gradient
+  let bassMapped = map(bass, 0, 100, 0.5, 2); // Assume bass range is 0 to 100
+  let startColor = color(43, 4, 113); // Deep blue
+  let endColor = color(158, 45, 205); // Purple
   let tension = 1;
   let suntension = 1;
   let textoffset = -140;
-  let sunColor = color(255, 100, 255); // 紫色
+  let sunColor = color(255, 100, 255); // Purple
   let sunDiameter = 200;
-  let smoothingFactor = 0.05; // 控制平滑度的因子
-  let rectWidths = [40, 60, 50, 80, 45, 70, 30, 55, 60, 65, 70,30];
-  let rectIntervals = [10, -15, 20, 10, -30, 485, -10, 15, 20, -17, 10,-15];
-  
+  let smoothingFactor = 0.05; // Smoothing factor
+  let rectWidths = [40, 60, 50, 80, 45, 70, 30, 55, 60, 65, 70, 30];
+  let rectIntervals = [10, -15, 20, 10, -30, 485, -10, 15, 20, -17, 10, -15];
+
+
   if (song.currentTime() > 17 && song.currentTime() < 19.75) {
     tension = 1;
     suntension = 8;
-    
   }
   if (song.currentTime() > 19.75 && song.currentTime() < 22.5) {
     tension = 1;
     suntension = 6;
-  } 
+  }
   if (song.currentTime() > 22.5 && song.currentTime() < 24) {
     tension = 1;
     suntension = 4;
@@ -35,8 +38,8 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   }
 
   background(5, 1, 36);
-  
-  // 创建背景渐变
+
+  // Create background gradient
   noStroke();
   for (let i = 0; i <= 1; i += 0.07 / other) {
     push();
@@ -45,21 +48,20 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     rect(0, i * height, width, height * 0.05 / other);
     pop();
   }
-  
-  // 绘制太阳
-  
-  let targetSunDiameter = map(bass, 0, 100, 5000 * tension, 6000 * tension); // 根据 bass 值计算太阳目标直径
+
+  // Draw the sun
+  let targetSunDiameter = map(bass, 0, 100, 5000 * tension, 6000 * tension);
   sunDiameter = lerp(sunDiameter, targetSunDiameter, smoothingFactor);
   push();
   fill(sunColor);
   noStroke();
   ellipse(width / 2, height / 3, sunDiameter, sunDiameter);
   pop();
-  
-  // 绘制太阳的光晕
+
+  // Draw the sun's halo
   for (let i = 1.2; i <= 2.5; i += 0.2 / suntension) {
-    let sunHaloDiameter = sunDiameter * i; // 光晕直径比太阳稍大
-    let sunHaloOpacity = map(bass, 50, 100, 5, 20); // 光晕的透明度随着bass的增大而减小
+    let sunHaloDiameter = sunDiameter * i;
+    let sunHaloOpacity = map(bass, 50, 100, 5, 20);
     push();
     fill(sunColor.levels[0], sunColor.levels[1], sunColor.levels[2], sunHaloOpacity);
     noStroke();
@@ -67,80 +69,71 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     pop();
   }
 
-  // 绘制太阳的倒影
-  let reflectionY = height - (height / 3);  // 计算倒影太阳的y坐标
+  // Draw the sun's reflection
+  let reflectionY = height - (height / 3);
   fill(sunColor);
   noStroke();
-  ellipse(width / 2, reflectionY, sunDiameter*0.95, sunDiameter*0.95);
+  ellipse(width / 2, reflectionY, sunDiameter * 0.95, sunDiameter * 0.95);
 
-
-  
   textFont('Helvetica');
   textSize(24);
-  
- // 计算矩形的参数
-let rectCount = 12; // 矩形的数量
-let bar_pos_y = height / 2;
 
-// 定义矩形的高度，分别对应不同参数
-let rectHeights = [4 * bass, 6 * bass, 4 * bass + drum, 4 * drum + bass, 6 * drum, 4 * drum + other, 4 * other + drum, 6 * other, 4 * other + vocal, 4 * vocal + other, 6 * vocal, 4 * vocal, 3 * vocal];
-let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8, 1 + drum / 8, 1 + drum / 8, 1 + other / 8, 1 + other / 8, 1 + other / 8, 1 + vocal / 8, 1 + vocal / 8,1 + vocal / 8.5];
+  // Calculate parameters for rectangles
+  let rectCount = 12;
+  let bar_pos_y = height / 2;
 
-// 初始化当前的x坐标和间隔索引
-let currentX = 20;
-let intervalIndex = 0;
+  // Define heights for rectangles based on different parameters
+  let rectHeights = [4 * bass, 6 * bass, 4 * bass + drum, 4 * drum + bass, 6 * drum, 4 * drum + other, 4 * other + drum, 6 * other, 4 * other + vocal, 4 * vocal + other, 6 * vocal, 4 * vocal, 3 * vocal];
+  let rectStrokeWeights = [1 + bass / 8, 1 + bass / 8, 1 + bass / 8, 1 + drum / 8, 1 + drum / 8, 1 + drum / 8, 1 + other / 8, 1 + other / 8, 1 + other / 8, 1 + vocal / 8, 1 + vocal / 8, 1 + vocal / 8.5];
 
-for (let i = 0; i < rectCount; i++) {
-  let rectWidth = rectWidths[i]; // 获取矩形的宽度
-  let rectHeight = rectHeights[i]; // 获取矩形的高度
-  let rectStrokeWeight = rectStrokeWeights[i]; // 获取矩形的strokeWeight
+  // Initialize current x-coordinate and interval index
+  let currentX = 20;
+  let intervalIndex = 0;
 
-  push();
-  noFill();
-  strokeWeight(rectStrokeWeight);
-  stroke(78, 230, 220); // 保持颜色不变
+  for (let i = 0; i < rectCount; i++) {
+    let rectWidth = rectWidths[i];
+    let rectHeight = rectHeights[i];
+    let rectStrokeWeight = rectStrokeWeights[i];
 
-  rect(currentX, bar_pos_y - rectHeight / 2, rectWidth, rectHeight); // 使用currentX作为x坐标
-  pop();
+    push();
+    noFill();
+    strokeWeight(rectStrokeWeight);
+    stroke(78, 230, 220);
 
-  // 将当前矩形的宽度和间隙累积到currentX上
-  currentX += rectWidth + rectIntervals[intervalIndex];
-  intervalIndex++; // 移动到下一个间隔值
+    rect(currentX, bar_pos_y - rectHeight / 2, rectWidth, rectHeight);
+    pop();
 
-  // 如果间隔索引超出了数组的长度，重新从第一个间隔开始
-  if (intervalIndex >= rectIntervals.length) {
-    intervalIndex = 0;
+    currentX += rectWidth + rectIntervals[intervalIndex];
+    intervalIndex++;
+
+    if (intervalIndex >= rectIntervals.length) {
+      intervalIndex = 0;
+    }
   }
-}
 
-
-
-
-
-  // 绘制发光的文本
-  let glowIntensity = map(drum, 20, 80, 3, 8); // 基于 drum 值计算发光强度
+  // Draw glowing text
+  let glowIntensity = map(drum, 20, 80, 3, 8);
   textAlign(CENTER);
   textSize(vocal * 1.3);
-  
-  // 先绘制倒影
-  push(); // 保存当前的设置
-  fill(255, 255, 255, 100);  // 设置倒影的颜色和透明度
-  scale(1, -1);  // 垂直翻转坐标系以绘制倒影
-  text(words, width / 2, - (bar_pos_y + 50 + vocal * 1.3));  // 这里 y 坐标是负的
-  pop();  // 恢复之前保存的设置
-  
-  // 绘制发光的文本
+
+  // Draw reflection first
   push();
-  let i=glowIntensity = map(drum, 20, 80, 3, 8); // 基于 drum 值计算发光强度
+  fill(255, 255, 255, 100);
+  scale(1, -1);
+  text(words, width / 2, - (bar_pos_y + 50 + vocal * 1.3));
+  pop();
+
+  // Draw glowing text
+  push();
+  let i = glowIntensity = map(drum, 20, 80, 3, 8);
   textAlign(CENTER);
   textSize(vocal * 1.3);
   pop();
 
-  // 先绘制倒影
-  fill(255, 255, 255, 70);  // 设置倒影的颜色和透明度
-  text(words, width / 20, textoffset);  // 倒影位置在y=500的地平线以下
-  
-  // 绘制主要的、发光的文本
+  fill(255, 255, 255, 70);
+  text(words, width / 20, textoffset);
+
+  // Draw main glowing text
   for (let i = glowIntensity; i > 0; i--) {
     push();
     fill(255, 165, 0, 50);
@@ -150,26 +143,25 @@ for (let i = 0; i < rectCount; i++) {
     text(words, width / 2 - i, bar_pos_y + i + textoffset);
     pop();
   }
-  
-  fill(255, 255, 0);  // 主要文本颜色
+
+  fill(255, 255, 0);
   text(words, width / 2, bar_pos_y + textoffset);
-  
+
   noStroke();
-  let startColor2 = color(27, 10, 71);  // 你可以按需调整这些颜色
-  let endColor2 = color(255, 105, 180);  // 你可以按需调整这些颜色
-  
-  for (let i = 500/height; i <= 1100/height; i += 0.05 / other) {  // 起始和结束位置调整为500和1100（绘制高度600）
+  let startColor2 = color(27, 10, 71);
+  let endColor2 = color(255, 105, 180);
+
+  for (let i = 500 / height; i <= 1100 / height; i += 0.05 / other) {
     push();
     let inter = lerpColor(startColor2, endColor2, i * bassMapped);
     fill(inter);
-    rect(0, i * height, 1200, height * 0.03 / other);  // 宽度调整为1200
+    rect(0, i * height, 1200, height * 0.03 / other);
     pop();
   }
 
-  
   push();
   stroke(173, 216, 230);
-  strokeWeight(2*drum/50);
+  strokeWeight(2 * drum / 50);
   line(0, 500, 1200, 500);
   line(0, 510, 1200, 510);
   line(0, 530, 1200, 530);
@@ -181,19 +173,42 @@ for (let i = 0; i < rectCount; i++) {
   line(0, 900, 1200, 900);
   pop();
 
-
-  // 绘制光晕效果
-  for (let i = 0; i <= 10; i++) {  // 从0到10，绘制11条线
-    let alpha = map(i, 0, 10, 0, 255);  // 根据 i 值映射透明度从0到255
-    let offsetY = map(i, 0, 10, 0, 10);  // 根据 i 值映射y轴偏移从0到10
-    stroke(173, 216, 230, 255 - alpha);  // 设置线条颜色和透明度
-    strokeWeight(0.01*bass);  // 设置线条宽度
-    line(0, 500 + offsetY, width, 500 + offsetY);  // 在y=500+offsetY处绘制线条
-    line(0, 500 - offsetY, width, 500 - offsetY);  // 在y=500-offsetY处绘制线条
+  // Draw halo effects
+  for (let i = 0; i <= 10; i++) {
+    let alpha = map(i, 0, 10, 0, 255);
+    let offsetY = map(i, 0, 10, 0, 10);
+    stroke(173, 216, 230, 255 - alpha);
+    strokeWeight(0.01 * bass);
+    line(0, 500 + offsetY, width, 500 + offsetY);
+    line(0, 500 - offsetY, width, 500 - offsetY);
   }
 
-  // 在y=500处绘制主要的地平线
-  stroke(173, 216, 230);  // 设置线条颜色为浅蓝色
-  strokeWeight(2);  // 设置线条宽度
-  line(0, 500, width, 500);  // 在y=500处绘制线条
+  // Draw the main horizon line at y=500
+  stroke(173, 216, 230);
+  strokeWeight(2);
+  line(0, 500, width, 500);
+
+  if (load==true) {
+    car = loadImage('car.png', () => {
+      // I have no idea why this doesn't work
+      console.log("Image loaded!");
+    });
+    load = false;
+  }
+   
+  if (car) {
+    // only draw the image AFTER the image is actually loaded
+    push();
+    scale(0.2);
+    image(car, 2850, 2500+drum/2);
+    pop();
+    
+    push(); 
+    scale(0.2);
+    translate(0, 5450); // move the origin point
+    scale(1, -1); // yeet the image around
+    tint(255, 50);
+    image(car, 2850, 2500 + drum / 2);
+    pop();
+  }
 }
