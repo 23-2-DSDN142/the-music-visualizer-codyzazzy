@@ -114,6 +114,30 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     }
   }
 
+  
+  if (load==true) {
+    tree = loadImage('tree.png', () => {
+      // I have no idea why this doesn't work
+      console.log("Tree image loaded!");
+    });
+  }  
+  if (tree) {
+    // only draw the image AFTER the image is actually loaded
+    push();
+    scale(0.3);
+    image(tree, 1740, 1075);
+    pop();
+    
+    push(); 
+    scale(0.3);
+    translate(0, 3375); // move the origin point
+    scale(1, -1); // yeet the image around
+    tint(255, 150);
+    image(tree, 1740, 2200/ 2);
+    pop();
+  }
+
+  
   // Draw glowing text
   let glowIntensity = map(drum, 20, 80, 3, 8);
   textAlign(CENTER);
@@ -149,10 +173,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
   fill(255, 255, 0);
   text(words, width / 2, bar_pos_y + textoffset);
-
   noStroke();
- 
-
   for (let i = 500 / height; i <= 1100 / height; i += 0.05 / other) {
     push();
     let inter = lerpColor(startColor2, endColor2, i * bassMapped);
@@ -222,30 +243,11 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
       // I have no idea why this doesn't work
       console.log("Car image loaded!");
     });
-    tree = loadImage('tree.png', () => {
-      // I have no idea why this doesn't work
-      console.log("Tree image loaded!");
-    });
     load = false;
   }
    
   
-  if (tree) {
-    // only draw the image AFTER the image is actually loaded
-    push();
-    scale(0.3);
-    image(tree, 1740, 1075);
-    pop();
-    
-    push(); 
-    scale(0.3);
-    translate(0, 3375); // move the origin point
-    scale(1, -1); // yeet the image around
-    tint(255, 50);
-    image(tree, 1740, 1075 + drum / 2);
-    pop();
 
-  }
   
   if (car) {
     // only draw the image AFTER the image is actually loaded
