@@ -4,8 +4,10 @@ let car;
 function draw_one_frame(words, vocal, drum, bass, other, counter) {
   // Calculate background color gradient
   let bassMapped = map(bass, 0, 100, 0.5, 2); // Assume bass range is 0 to 100
-  let startColor = color(43, 4, 113); // Deep blue
-  let endColor = color(158, 45, 205); // Purple
+  let endColor = color(255, 0, 204); // Deep blue
+  let startColor = color(43, 4, 113); // Purple
+  let startColor2 = color(255, 126, 255);
+  let endColor2 = color(32, 2, 30);
   let tension = 1;
   let suntension = 1;
   let textoffset = -140;
@@ -41,11 +43,12 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
 
   // Create background gradient
   noStroke();
+  let targetY = 500; // 设定目标高度为 500
   for (let i = 0; i <= 1; i += 0.07 / other) {
     push();
     let inter = lerpColor(startColor, endColor, i * bassMapped);
     fill(inter);
-    rect(0, i * height, width, height * 0.05 / other);
+    rect(0, i * targetY, width, targetY * 0.05 / other);
     pop();
   }
 
@@ -148,8 +151,7 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   text(words, width / 2, bar_pos_y + textoffset);
 
   noStroke();
-  let startColor2 = color(27, 10, 71);
-  let endColor2 = color(255, 105, 180);
+ 
 
   for (let i = 500 / height; i <= 1100 / height; i += 0.05 / other) {
     push();
@@ -159,9 +161,22 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     pop();
   }
 
+
+  let startY = 500;
+  let endY = height;
+  let step = (endY - startY) * 0.05 / other;
+  
+  for (let y = startY; y <= endY; y += step) {
+      let lerpFactor = map(y, startY, endY, 0, 1);
+      let inter = lerpColor(startColor2, endColor2, lerpFactor * bassMapped);
+      fill(inter);
+      rect(0, y, 1200, step);
+  }
+
   push();
-  stroke(173, 216, 230);
-  strokeWeight(2 * drum / 50);
+  stroke(180, 180, 200);
+  let strokeglow = map(drum, 0, 60, 0, 1.5);
+  strokeWeight(strokeglow);
   line(0, 500, 1200, 500);
   line(0, 510, 1200, 510);
   line(0, 530, 1200, 530);
@@ -171,6 +186,20 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   line(0, 700, 1200, 700);
   line(0, 790, 1200, 790);
   line(0, 900, 1200, 900);
+  line(width/2, 500, width/2, height);
+  //y lines
+  line(width/2+20, 500, width/2+400, height);
+  line(width/2-20, 500, width/2-400, height);
+  line(width/2+40, 500, width/2+800, height);
+  line(width/2-40, 500, width/2-800, height);
+  line(width/2+60, 500, width/2+1600, height);
+  line(width/2-60, 500, width/2-1600, height);
+  line(width/2+80, 500, width/2+3200, height);
+  line(width/2-80, 500, width/2-3200, height);
+  line(width/2+100, 500, width/2+6400, height);
+  line(width/2-100, 500, width/2-6400, height);
+  line(width/2+120, 500, width/2+12800, height);
+  line(width/2-120, 500, width/2-12800, height);
   pop();
 
   // Draw halo effects
@@ -191,16 +220,38 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
   if (load==true) {
     car = loadImage('car.png', () => {
       // I have no idea why this doesn't work
-      console.log("Image loaded!");
+      console.log("Car image loaded!");
+    });
+    tree = loadImage('tree.png', () => {
+      // I have no idea why this doesn't work
+      console.log("Tree image loaded!");
     });
     load = false;
   }
    
+  
+  if (tree) {
+    // only draw the image AFTER the image is actually loaded
+    push();
+    scale(0.3);
+    image(tree, 1740, 1075);
+    pop();
+    
+    push(); 
+    scale(0.3);
+    translate(0, 3375); // move the origin point
+    scale(1, -1); // yeet the image around
+    tint(255, 50);
+    image(tree, 1740, 1075 + drum / 2);
+    pop();
+
+  }
+  
   if (car) {
     // only draw the image AFTER the image is actually loaded
     push();
     scale(0.2);
-    image(car, 2850, 2500+drum/2);
+    image(car, 2860, 2500+drum/2);
     pop();
     
     push(); 
@@ -208,7 +259,8 @@ function draw_one_frame(words, vocal, drum, bass, other, counter) {
     translate(0, 5450); // move the origin point
     scale(1, -1); // yeet the image around
     tint(255, 50);
-    image(car, 2850, 2500 + drum / 2);
+    image(car, 2860, 2500 + drum / 2);
     pop();
+
   }
 }
